@@ -1,0 +1,396 @@
+%%%%%%%%%%%%%% REQUIRED PACKAGES %%%%%%%%%%%%%%%%
+\RequirePackage{setspace}
+\RequirePackage[skip=0.5em]{parskip}
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{float}
+\RequirePackage{mathrsfs}
+\RequirePackage{tikz-cd}
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{enumitem}
+\RequirePackage{graphicx}
+\RequirePackage{titlesec}
+\RequirePackage{ragged2e}
+\RequirePackage{color}
+\RequirePackage{hyperref}
+\RequirePackage{mdframed}
+\RequirePackage{fancyhdr}
+\RequirePackage{titleref}
+\RequirePackage{lipsum}
+\RequirePackage{tocloft}
+\RequirePackage{extarrows}
+\RequirePackage{mathtools}
+\RequirePackage{newcomputermodern} % Loads unicode-math
+\RequirePackage[toc,page]{appendix}
+\RequirePackage[backend=biber,style=alphabetic]{biblatex} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%% BIBLIOGRAPHY SETUP %%%%%%%%%%%%%%%%
+\addbibresource{refs.bib}
+\hypersetup{
+    colorlinks=true, 
+    linktoc=all,
+    linkcolor=black,
+    citecolor=black,
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%% FORMATTING THINGS %%%%%%%%%%%%%%%%
+%% SECTIONS AND SUBSECTIONS %%
+\titleformat{\section}[block]{\center\normalfont\scshape}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{0.5em}{0.5em}
+
+\titleformat{\subsection}[hang]{\normalfont\bfseries}{\normalfont\thesubsection.}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{0.5em}{0.5em}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ABSTRACT %%
+\mdfdefinestyle{abstract}{leftmargin=.05\linewidth,rightmargin=.05\linewidth,%
+innerleftmargin=0pt,innerrightmargin=0pt,roundcorner=0pt, linewidth=0pt}
+
+\renewcommand{\abstract}[1]{\begin{mdframed}[style=abstract] \textsc{Abstract}. #1
+\end{mdframed}}
+%%%%%%%%%%%%%%
+
+%% TABLE OF CONTENTS %%
+\renewcommand{\cfttoctitlefont}{\hfil\normalfont\scshape}
+\renewcommand{\cftaftertoctitle}{\hfil}
+\setlength{\cftsubsecindent}{0pt}
+\setlength{\cftbeforesecskip}{0.5em}
+\renewcommand{\cftdotsep}{9}
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecdotsep}{\cftdotsep}
+\renewcommand{\cftsubsecdotsep}{\cftdotsep}
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%% HEADERS AND FOOTERS %%
+\fancyhf{}
+\fancyhead[L]{\footnotesize \leftmark}
+\fancyhead[R]{\footnotesize \thepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% PARAGRAPH INDENT %%
+\setlength{\parindent}{0pt}
+%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%% THEOREM ENVIRONMENTS %%%%%%%%%%%%%%%%
+\newtheoremstyle{standard}
+    {10pt}
+    {10pt}
+    {}
+    {\parindent}
+    {\scshape}
+    {}
+    {.5em}
+    {}
+\theoremstyle{standard}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{exmp}{Example}[section]
+\newtheorem*{rem}{Remark}
+\newtheorem*{question}{Question}
+\newtheorem{exer}{Exercise}[section]
+\newtheorem*{todo}{TODO}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%% STYLIZED LETTERS %%%%%%%%%%%%%%%%
+%% BOLD LETTERS %%
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\one}{\mathbb{1}}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\ff}{\mathbb{F}}
+\newcommand{\rp}{\mathbb{RP}}
+\newcommand{\cp}{\mathbb{CP}}
+\renewcommand\tt{\mathbb{T}}
+\newcommand{\bp}{\mathbb{P}}
+\newcommand{\boldp}{\mathbb{P}}
+\renewcommand\aa{\mathbb{A}}
+\newcommand\ii{\mathbb{I}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\bd}{\mathbb{D}}
+\newcommand{\bs}{\mathbb{S}}
+\newcommand{\ba}{\mathbb{A}}
+% MATHFRAK LETTERS %
+\newcommand{\pp}{\mathfrak{p}}
+\newcommand{\fg}{\mathfrak{g}}
+\newcommand{\fb}{\mathfrak{b}}
+\newcommand{\fh}{\mathfrak{h}}
+\newcommand{\PP}{\mathfrak{P}}
+\newcommand{\frakq}{\mathfrak{q}}
+\newcommand{\frakQ}{\mathfrak{Q}}
+\newcommand{\mm}{\mathfrak{m}}
+\newcommand{\MM}{\mathfrak{M}}
+\newcommand{\frako}{\mathfrak{o}}
+\newcommand{\fraka}{\mathfrak{a}}
+\newcommand{\frakb}{\mathfrak{b}}
+\newcommand{\frakc}{\mathfrak{c}}
+\newcommand{\frakd}{\mathfrak{d}}
+\newcommand{\frakD}{\mathfrak{D}}
+\newcommand{\frakn}{\mathfrak{n}}
+\newcommand{\frakf}{\mathfrak{f}}
+\newcommand{\frakg}{\mathfrak{g}}
+\newcommand{\jj}{\mathfrak{j}}
+\newcommand{\frakx}{\mathfrak{X}}
+\newcommand{\fraky}{\mathfrak{Y}}
+%% MATHCAL LETTERS %%
+\newcommand{\calc}{\mathcal{C}}
+\newcommand{\cald}{\mathcal{D}}
+\newcommand{\calf}{\mathcal{F}}
+\newcommand{\calg}{\mathcal{G}}
+\newcommand{\calh}{\mathcal{H}}
+\newcommand{\cala}{\mathcal{A}}
+\newcommand{\calb}{\mathcal{B}}
+\newcommand{\cale}{\mathcal{E}}
+\newcommand{\calo}{\mathcal{O}}
+\newcommand{\cali}{\mathcal{I}}
+\newcommand{\calj}{\mathcal{J}}
+\newcommand{\call}{\mathcal{L}}
+\newcommand{\calx}{\mathcal{X}}
+\newcommand{\caly}{\mathcal{Y}}
+\newcommand{\calz}{\mathcal{Z}}
+\newcommand{\calm}{\mathcal{M}}
+\newcommand{\caln}{\mathcal{N}}
+\newcommand{\cals}{\mathcal{S}}
+\newcommand{\calq}{\mathcal{Q}}
+\newcommand{\calp}{\mathcal{P}}
+%% FANCY LETTERS %%
+\newcommand{\fanc}{\mathscr{C}}
+\newcommand{\fanb}{\mathscr{B}}
+\newcommand{\fane}{\mathscr{E}}
+\newcommand{\fanu}{\mathscr{U}}
+\newcommand{\fanf}{\mathscr{F}}
+\newcommand{\fanp}{\mathscr{P}}
+\newcommand{\fanl}{\mathscr{L}}
+\newcommand{\fana}{\mathscr{A}}
+\newcommand{\fanx}{\mathscr{X}}
+\newcommand{\fany}{\mathscr{Y}}
+\newcommand{\fanz}{\mathscr{Z}}
+\newcommand{\fang}{\mathscr{G}}
+\newcommand{\fanh}{\mathscr{H}}
+\newcommand{\fani}{\mathscr{I}}
+\newcommand{\fanm}{\mathscr{M}}
+\newcommand{\fann}{\mathscr{N}}
+\newcommand{\fans}{\mathscr{S}}
+\newcommand{\fanq}{\mathscr{Q}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%% OPERATIONS, CONNECTORS & SEPARATORS %%%%%%%%%%%%
+%%% Module Things %%
+\newcommand{\tensor}{\otimes}
+\newcommand{\bigtensor}{\bigotimes}
+\newcommand{\dsum}{\oplus}
+\newcommand{\bigdsum}{\bigoplus}
+%% Maps %%
+\newcommand{\inj}{\hookrightarrow}
+\newcommand{\surj}{\twoheadrightarrow}
+\newcommand{\bij}{\overset{\sim}{\to}}
+\newcommand{\dlim}{\varinjlim}
+\newcommand{\inlim}{\varprojlim}  
+%% Topology Things %%
+\renewcommand{\bar}[1]{\overline{#1}}
+\newcommand{\csum}{\#}
+\DeclareMathOperator{\topint}{int}
+\newcommand{\topwedge}{\vee}
+\newcommand{\bigtopwedge}{\bigvee}
+\renewcommand{\tilde}{\widetilde}
+\renewcommand{\hat}{\widehat}
+%% Left-Righting Things %%
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\brangle}[1]{\left\langle #1 \right\rangle}
+\renewcommand{\brack}[1]{\left(   #1 \right)}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\norm}[1]{\left\lVert #1 \right \rVert}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+\newcommand{\sqbrack}[1]{\left[ #1 \right]}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%% CUSTOM SYMBOLS FOR FUNZIES %%%%%%%%%%%%%
+\newcommand{\fish}{ %% For R.V. w/ Poisson dist %%
+  \mathchoice
+    {\mathrel{\ooalign{$\alpha$\cr\hidewidth \kern -0.13em $\cdot$\hidewidth}}}% \displaystyle
+    {\mathrel{\ooalign{$\alpha$\cr\hidewidth \kern -0.13em$\cdot$\hidewidth}}}% \textstyle
+    {\mathrel{\ooalign{$\scriptstyle\alpha$\cr\hidewidth\kern -0.13em $\scriptstyle\cdot$\hidewidth}}}% \scriptstyle
+    {\mathrel{\ooalign{$\scriptscriptstyle\alpha$\cr\hidewidth \kern -0.13em $\scriptscriptstyle\cdot$\hidewidth}}}% \scriptscriptstyle
+}
+
+\newcommand{\notimplies}{
+\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%% MISC OPS&COMMANDS %%%%%%%%%%%%%%%%%
+%% Categorical tingz %%
+\DeclareMathOperator{\Set}{\mathsf{Set}}
+\DeclareMathOperator{\Isom}{Isom}
+\DeclareMathOperator{\Afft}{\mathsf{Aff}^{ft}}
+\DeclareMathOperator{\Aff}{\mathsf{Aff}}
+\DeclareMathOperator{\Ab}{\mathsf{Ab}}
+\DeclareMathOperator{\Grp}{\mathsf{Grp}}
+\DeclareMathOperator{\Grpd}{\mathsf{Grpd}}
+\DeclareMathOperator{\Top}{\mathsf{Top}}
+\DeclareMathOperator{\Diff}{\mathsf{Diff}}
+\DeclareMathOperator{\Rmod}{\mathsf{R-Mod}}
+\DeclareMathOperator{\Zmod}{Z-\mathsf{Mod}}
+\DeclareMathOperator{\Amod}{\mathsf{A-Mod}}
+\DeclareMathOperator{\Vect}{\mathsf{Vect}}
+\DeclareMathOperator{\Ring}{\mathsf{Ring}}
+\DeclareMathOperator{\CRing}{\mathsf{CRing}}
+\DeclareMathOperator{\Meas}{\mathsf{Meas}}
+\DeclareMathOperator{\Met}{\mathsf{Met}}
+\DeclareMathOperator{\Cat}{\mathsf{Cat}}
+\DeclareMathOperator{\Man}{\mathsf{Man}}
+\DeclareMathOperator{\Sh}{\mathsf{Sh}}
+\DeclareMathOperator{\Presh}{\mathsf{PreSh}}
+\DeclareMathOperator{\PreSh}{\mathsf{PreSh}}
+\DeclareMathOperator{\Open}{\mathsf{Open}}
+\DeclareMathOperator{\Et}{\mathsf{Et}}
+\DeclareMathOperator{\Sch}{\mathsf{Sch}}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\mor}{Mor}
+\DeclareMathOperator{\Mor}{Mor}
+\DeclareMathOperator{\ob}{Ob}
+\DeclareMathOperator{\Ob}{Ob}
+\DeclareMathOperator{\op}{\mathsf{op}}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\coim}{coim}
+%% Algebra Tingz %%
+\DeclareMathOperator{\Ext}{Ext}
+\newcommand{\rExt}{\mathcal{E}xt}
+\DeclareMathOperator{\Tor}{Tor}
+\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\aut}{Aut}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\gal}{Gal}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\sep}{sep}
+\newcommand{\ideal}{\trianglelefteq}
+\DeclareMathOperator{\rad}{rad}
+\DeclareMathOperator{\nil}{nil}
+\DeclareMathOperator{\ann}{ann}
+\DeclareMathOperator{\ab}{ab}
+\DeclareMathOperator{\Frac}{Frac}
+\DeclareMathOperator{\trdeg}{trdeg}
+\DeclareMathOperator{\orb}{Orb}
+\DeclareMathOperator{\stab}{Stab}
+\newcommand{\acts}{\curverightarrow}
+\newcommand{\actson}{\curverightarrow}
+\newcommand{\action}{\curverightarrow}
+\DeclarePairedDelimiter\Brackets{\lBrack}{\rBrack} % double brackets
+\DeclarePairedDelimiter\Parens{\lParen}{\rParen} % double parentheses
+\newcommand{\pt}[1]{#1\Parens{t}}
+\newcommand{\bt}[1]{#1\Brackets{t}}
+%% ANT Tings %%
+\newcommand{\zzz}[1]{\zz/#1 \zz}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\cl}{Cl}
+\DeclareMathOperator{\bigdiv}{Div}
+\DeclareMathOperator{\smalldiv}{div}
+\DeclareMathOperator{\trace}{Tr}
+\DeclareMathOperator{\tr}{Tr}
+\DeclareMathOperator{\disc}{disc}
+%% Function Tingz %%
+\DeclareMathOperator{\id}{Id}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\image}{Im}
+\newcommand{\im}[1]{\mathfrak{Im} \left( #1 \right)}
+\newcommand{\re}[1]{\mathfrak{Re} \left( #1 \right)}
+\newcommand{\inv}[1]{#1^{-1}}
+%% Alg Geo Tingz %%
+\newcommand{\ox}{\calo_X}
+\newcommand{\homsheaf}{\mathcal{H}\text{om}}
+\DeclareMathOperator{\spec}{Spec}
+\DeclareMathOperator{\mspec}{Max-Spec}
+\DeclareMathOperator{\supp}{Supp}
+\DeclareMathOperator{\ass}{Ass}
+\DeclareMathOperator{\weakass}{WeakAss}
+\DeclareMathOperator{\proj}{Proj}
+\DeclareMathOperator{\et}{et}
+\DeclareMathOperator{\grass}{Gr}
+\DeclareMathOperator{\gr}{Gr}
+\DeclareMathOperator{\Gr}{Gr}
+\DeclareMathOperator{\hilb}{\mathcal{H}ilb}
+\DeclareMathOperator{\Hilb}{\mathcal{H}ilb}
+\DeclareMathOperator{\bg}{\calb G}
+\DeclareMathOperator{\bh}{\calb H}
+\DeclareMathOperator{\Bun}{Bun}
+\DeclareMathOperator{\Maps}{Maps}
+\DeclareMathOperator{\Sect}{Sect}
+%% Matrix Tingz %%
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Gl}{GL}
+\DeclareMathOperator{\gl}{GL}
+\DeclareMathOperator{\PSL}{PSL}
+\DeclareMathOperator{\psl}{PSL}
+\DeclareMathOperator{\pgl}{PGL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\Sp}{Sp}
+\DeclareMathOperator{\SU}{SU}
+\DeclareMathOperator{\su}{SU}
+\DeclareMathOperator{\mat}{\mathsf{Mat}}
+\DeclareMathOperator{\mot}{\mathsf{Mot}}
+\DeclareMathOperator{\graph}{\mathsf{Graph}}
+\DeclareMathOperator{\rep}{Rep}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\sym}{Sym}
+%% Analysis Tingz %%
+\DeclareMathOperator{\grad}{grad}
+\DeclareMathOperator{\curl}{curl}
+\newcommand{\dA}{\, \mathrm{d}A}
+\newcommand{\dq}{\, \mathrm{d}q}
+\newcommand{\dr}{\, \mathrm{d}r}
+\newcommand{\ds}{\, \mathrm{d}s}
+\newcommand{\dt}{\, \mathrm{d}t}
+\newcommand{\du}{\, \mathrm{d}u}
+\newcommand{\dv}{\, \mathrm{d}v}
+\newcommand{\dV}{\, \mathrm{d}V}
+\newcommand{\dx}{\, \mathrm{d}x}
+\newcommand{\dy}{\, \mathrm{d}y}
+\newcommand{\dz}{\, \mathrm{d}z}
+\newcommand{\dtheta}{\, \mathrm{d}\theta}
+\newcommand{\domega}{\, \mathrm{d}\omega}
+\newcommand{\del}{\partial}
+\DeclareMathOperator{\vol}{Vol}
+%% Topology Tingz %%
+\DeclareMathOperator{\rel}{rel}
+\newcommand{\lift}[1]{\widetilde{#1}}
+%% Logic Tingz %%
+\newcommand{\semantics}[1]{[\![\textnormal{$ #1 $\/}]\!]}
+\newcommand{\entails}{\Vdash}
+%% Prob Tingz %%
+\newcommand{\given}{\mid}
+\DeclareMathOperator{\opt}{opt}
+\DeclareMathOperator{\var}{var}
+\DeclareMathOperator{\bin}{Bin}
+\DeclareMathOperator{\geo}{Geo}
+\DeclareMathOperator{\poi}{Poi}
+\DeclareMathOperator{\ber}{Ber}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
