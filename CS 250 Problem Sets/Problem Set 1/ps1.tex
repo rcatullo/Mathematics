@@ -1,0 +1,441 @@
+\documentclass{article}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\FF}{\mathbb{F}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\spn}{\mathrm{span}}
+\newcommand{\Vol}{\mathrm{Vol}}
+\usepackage{standard}
+\usepackage{fullpage,graphicx}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,multirow}
+\usepackage{algorithmic,comment,url,enumitem}
+\newtheorem{definition}{Definition}
+\usepackage{tikz}
+\usepackage{framed}
+\setenumerate[1]{label=\thesection.\arabic*.}
+\usetikzlibrary{decorations.pathreplacing, shapes}
+\usepackage[ruled,vlined,commentsnumbered,titlenotnumbered]{algorithm2e}
+\definecolor{shadecolor}{gray}{0.95}
+
+
+
+\begin{document}
+\noindent CS250/EE387: Error Correcting Codes \hfill  Winter 2025\\
+\textbf{Problem Set 1} \\
+\textbf{Due:} by 11:59pm Friday, January 17 2025, on Gradescope \\
+\hrule
+
+\begin{shaded}
+
+\textbf{Team Members: Ryan Catullo}
+
+\textbf{(Optional) Awesome Team Name: The Algebraic Code Correcting Team}
+
+\end{shaded}
+
+
+\vspace{.5cm}
+\noindent \textbf{Instructions:} 
+\begin{itemize}
+\item Please complete all problems in Section 1.  
+\item Try to complete 3 of the problems in Section 2.  You are welcome to do more than 3, but please indicate which 3 you want graded.  
+\item No problems in Section 3 are required, but they might be fun to think about (some might be open-ended).  
+\item Problems are labeled with the class number after which you should be able to do them.  (This is to aid your time management since all HWs are posted up front).
+\end{itemize}
+\noindent \textbf{Guidelines/rules:}
+\begin{itemize}
+\item You are encouraged to work in groups (up to 3); each group should turn in one HW assignment.
+\item Please refer to the collaboration policy on the course website.  
+It is fine to use computational resources like Sage or Mathematica if you want to.
+\end{itemize}
+Typing up your solutions in \LaTeX \ is encouraged (but I don't type up my lecture notes, so I can't be too strict).  Legibility and complete sentences are required.  
+\\
+\hrule
+
+\section*{Section 1}
+\setcounter{section}{1}
+(Do all of these problems.)
+\begin{enumerate}
+
+\item (8 pts, Class 2) Please answer the following questions with a brief justification of your answer. Let $\cC$ be the binary linear code with generator matrix
+\[ G = \begin{pmatrix} 0 & 0 & 1 \\ 0& 1& 1 \\ 1 & 1 & 1 \\ 1 & 1 & 0 \\ 1 & 0 & 0 \end{pmatrix} \]
+\begin{enumerate}
+	\item What is the dimension of $\cC$?
+
+\begin{shaded}
+\textbf{SOLUTION:}
+$\calc$ has dimension $3$. $\calc$ is the image of $G$, so $\dim \calc = \rank G$. By rank-nullity, $\rank G = 3 - \dim \ker G$. If $x = (x_1,x_2,x_3) \in \ker G$ then $Gx = 0$ implies $x_3 = 0$, $x_1 = 0$, and therefore since $x_1 + x_2 + x_3 = 0$ that $x_2 = 0$. Thus $\ker G = 0$ so $\rank G = 3$.
+\end{shaded}
+
+	\item Find a parity-check matrix for $\calc$.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+The image of $x = (x_1, x_2, x_3)$ under $G$ is $(x_3, x_2 + x_3, x_1 + x_2 + x_3, x_1 + x_2, x_1)$. Let's rename this $c = (c_1, \ldots, c_5)$ and note we have defining relations $c_1 + c_3 + c_4 = 0$, $c_2 + c_3 +  c_5 = 0$, and $c_1 + c_2 + c_4 + c_5 = 0$ so our parity-check matrix for $\calc$ is
+\[H = \begin{pmatrix}
+    1 & 0 & 1 & 1 & 0 \\
+    0 & 1 & 1 & 0 & 1 \\
+    1 & 1 & 0 & 1 & 1
+\end{pmatrix}\]
+\end{shaded}
+
+	\item What is the distance of $\cC$?
+
+\begin{shaded}
+\textbf{SOLUTION:}
+The distance of $\calc$ is $2$. The distance is the minimum number of linearly independent columns of $H$. There is no $0$ column so the distance is at least $2$, and columns $2$ and $5$ are dependent.
+\end{shaded}
+
+	\item Find another generator matrix $G'$ for the same code $\cC$ that represents a systematic encoding; that is, so that the encoding map $x \mapsto G'x$ has the form
+$(x_1,x_2,x_3) \mapsto (x_1,x_2,x_3,a,b)$ for some $a,b \in \F_2$.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+We want $(x_1, x_2, x_3, a, b) = (t_3, t_2+t_3, t_1+t_2+t_3, t_1+t_2, t_1)$. We can let $a = t_1+t_2 = x_1 + x_3$ and $b = t_1 = x_2 + x_3$, giving the following matrix.
+\[G' = \begin{pmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1 \\
+    1 & 0 & 1 \\
+    0 & 1 & 1
+\end{pmatrix}\]
+\end{shaded}
+
+\end{enumerate}
+
+\item (4 pts, Class 1) Suppose that $\cC$ is a code of length $n$ and distance $d$.  Consider a noise model that has both errors and erasures: that is, when a codeword $c \in \Sigma^n$ is transmitted, the recieved word $y \in (\Sigma \cup \{\bot\})^n$ has
+\[ y_i \in \Sigma \setminus \{ c_i \} \] 
+for at most $e$ positions $i$, and $y_i = \bot$ for at most $s$ positions $i$.  Show that as long as $2e + s < d$, then $c$ can be determined from $y$.
+(Above, the symbol $\bot$ is a place-holder symbol not in $\Sigma$, which corresponds to ``erasure.")
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Let $I$ be the set of indices for which $y_i = \bot$, i.e. the indices of the erasures in $y$. Remove the bits at the $s$ indices of the erasures $I$ from both $y$ and the codewords $c \in \calc$. That is, let $y' \in \Sigma^{n - s}$ be $(y_i)_{i \not \in I}$, and let $\calc'$ be the collection of $c' = (c_i)_{i \not \in I} \in \Sigma^{n-s}$ for $c \in C$. We have then removed $s$ bits at some fixed set of indices from every codeword, and each removed bit decreases the distance between any two codewords by at most $1$, which means if our new distance of $\calc'$ is $d'$ then $d'\geq d - s$. There are still $e$ errors (but no erasures) in the remaining bits of $y'$, but $2e + 1 \leq d -s \leq d'$ and there is at most one codeword $c'$ that is $e \leq \lfloor (d'-1)/2\rfloor$ bits away from $y'$, since again the minimum distance between codewords is $d'$. Then our codeword must be $c$, the unique codeword corresponding to the $c'$ that we found (unique since no two codewords collided when we removed $s < d$ bits from each of them in the same locations).
+\end{shaded}
+
+\end{enumerate}
+\section*{Section 2}
+\setcounter{section}{2}
+Section 2 problems are worth 10 points each; please do at least 3 of them.  
+
+\vspace{.5cm}
+\noindent
+\textcolor{red}{
+\textbf{IMPORTANT:} In gradescope, please tag all problems you want feedback on.  However, if you tag more than 3, write ``NOT FOR GRADING!!!!'' prominently at the top of all but 3 of them.  }
+
+\vspace{.5cm}
+
+Some of the problems in Section 2 reference the \emph{Hamming Code} $\mathcal{H}$ which we discussed during the in-class work in Class 2.  
+Recall the following definition:
+\begin{definition} Let $n = 2^r - 1$ for some integer $r$.  The Hamming code $\cH_r$ of length $n$ is the code whose parity-check matrix $H_r \in \F_2^{r \times n}$ is the matrix which has every nonzero vector in $\{0,1\}^r$ as its columns.
+\end{definition}
+
+Now onto the problems.
+
+\begin{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\item (\textbf{Fun with linear algebra over finite fields}, Class 2) 
+
+
+Let $q$ be a power of a prime and $\FF_q$ be the finite field of order $q$.
+In this exercise you'll rigorously prove a few statements of the flavor ``linear algebra works over finite fields."  So, for the following problems, \textbf{use only the definitions we've seen and fact that $\FF_q$ is a finite field} (that is, you may use the definitions of ``linear independent," ``subspace," and so on, and the field axioms, but do not appeal to linear algebra ``facts" that you may know).  (See the lecture notes for the list of definitions that ``we've seen.'')
+
+
+Let $V \subseteq \FF_q^N$ be a subspace over $\FF_q$.  
+Recall that a \textbf{basis} for $V$ is any collection of vectors $a_1,\ldots,a_n \in V$ so that the $a_i$ are linearly independent and $\spn(a_1,\ldots,a_n) = V$.
+Let $\mathcal{A} = \{a_1,\ldots,a_n\}$ be a basis for~$V$.
+
+\begin{enumerate}
+\item[(a)] Prove the following useful statements about finite fields (using the field axioms):
+\begin{itemize}
+\item Suppose that $\alpha \in \FF_q$.  Then $\alpha \cdot 0 = 0$.
+\item Suppose that $\alpha, \beta \in \FF_q$ are both nonzero.  Then $\alpha \cdot \beta \neq 0$.
+\end{itemize}
+
+\begin{shaded}
+\textbf{SOLUTION:}
+\begin{itemize}
+    \item We have $0 + 0 = 0$ so $\alpha \cdot (0 + 0) = \alpha \cdot 0 + \alpha \cdot 0 = \alpha \cdot 0$. Adding $-(\alpha \cdot 0)$ to both sides gives $\alpha \cdot 0 = 0$.
+    \item If $\alpha \cdot \beta = 0$ and $\alpha \neq 0$ then $\alpha^{-1}$ exists, so using associativity $\beta = 1 \cdot \beta = (\alpha^{-1} \cdot \alpha) \cdot \beta = \alpha^{-1} \cdot (\alpha \cdot \beta) = \alpha^{-1} \cdot 0 = 0$ where the last equality is by the first part. 
+\end{itemize}
+\end{shaded}
+
+\item[(b)]
+Suppose that $b_1,\ldots,b_m \in V$ are linearly independent, with $m \leq n$.  Prove that there exists an ordering $a_1,\ldots, a_n$ of $\mathcal{A}$ so that, for all $k \in \{1,\ldots,m\}$, $\{b_1,\ldots,b_k, a_{k+1}, \ldots,a_n\}$ is a basis for $V$. (Hint: use induction on $k$; part (a) might be useful).  
+
+\begin{shaded}
+\textbf{SOLUTION:}
+We proceed by induction on $k$. 
+\begin{itemize}
+    \item $k = 1$: Since $a_1,\ldots,a_n$ is a basis, 
+    \[b_1 = \alpha_1 a_1 + \ldots + \alpha_n a_n\] 
+    $b_1$ is non-zero (linear independence), so there exists some non-zero $\alpha_i$. Up to reordering we can assume $\alpha_1 \neq 0$. Then $a_1 = \alpha_1^{-1} b_1 - \alpha_1^{-1} \alpha_2 a_2 - \ldots - \alpha_1^{-1} \alpha_n a_n$ so $\{b_1, a_2 \ldots, a_n\}$ spans $V$. If 
+    \[\beta_1 b_1 + \beta_2 a_2 + \ldots + \beta_n a_n = 0\] 
+    then substituting $b_1 = \alpha_1 a_1 + \ldots + \alpha_n a_n$ shows by linear independence of $\{a_1,\ldots,a_n\}$ that $\beta_1 \alpha_1 = 0$, hence $\beta_1 = 0$ since $\alpha_1 \neq 0$. Again by linear independence of $\{a_1,\ldots,a_n\}$ we get the rest of the $\beta_i$ are $0$, so $\{b_1,a_2,\ldots,a_n\}$ is a basis.
+    \item inductive step: assume $\{b_1,\ldots,b_k, a_{k+1}, \ldots, a_n\}$ is a basis for $V$ for some $k \in \{1, \ldots, m-1\}$. Then 
+    \[b_{k+1} = \alpha_1 b_1 + \ldots + \alpha_k b_k + \alpha_{k+1}a_{k+1} + \alpha_n a_n\] 
+    If $\alpha_{k+1} = \ldots = \alpha_n = 0$ then we have a contradiction since $b_1,\ldots,b_m$ are linearly independent, so up to reordering we can assume $\alpha_{k+1}$ is nonzero. Then $a_{k+1} = \alpha_{k+1}^{-1}(-\alpha_1 b_1 - \ldots - \alpha_k b_k + b_{k+1} - \alpha_{k+2}a_{k+2} - \ldots - \alpha_n a_n)$ so $\{b_1,\ldots,b_{k+1},a_{k+2}, \ldots, a_n\}$ spans $V$. If 
+    \begin{equation}\label{linind}
+        \beta_1 b_1 + \ldots + \beta_{k+1} b_{k+1} + \beta_{k+2} a_{k+2} + \ldots + \beta_n a_n = 0
+    \end{equation} 
+    then substituting $b_{k+1} = \alpha_1 b_1 + \ldots + \alpha_k b_k + \alpha_{k+1}a_{k+1} + \alpha_n a_n$ we see by linear independence of $\{b_1,\ldots,b_k, a_{k+1}, \ldots, a_n\}$ that $\beta_{k+1} \alpha_{k+1} = 0$ (the coefficient of $a_{k+1}$ after expanding above). Since $\alpha_{k+1} \neq 0$ we get $\beta_{k+1} = 0$. 
+    
+    Then (\ref{linind}) is in the span of $\{b_1,\ldots,b_k, a_{k+2}, \ldots, a_n\} \subset \{b_1, \ldots, b_k, a_{k+1}, \ldots, a_n\}$ which is linearly independent by the inductive hypothesis, so the rest of the $\beta_i$ are $0$. By induction, $\{b_1, \ldots, b_{k+1}, a_{k+2}, \ldots, a_n\}$ is a basis.
+\end{itemize}
+\end{shaded}
+
+
+\item[(c)] Show (using part (b)) that any two bases of $V$ must have the same cardinality.  (That is, our definition of ``dimension" makes sense).
+
+\begin{shaded}
+\textbf{SOLUTION:}
+
+Let $\{b_1,\ldots, b_m\}$ and $\{a_1,\ldots,a_n\}$ be bases of $V$ with $m < n$. Then the $\{b_i\}$ are linearly independent, so by part (b) there is an ordering of the $\{a_i\}$ basis such that $\{b_1,\ldots,b_m, a_{m+1}, \ldots, a_n\}$ is a basis. However, since $\{b_i\}$ is a basis, there are constants such that $a_{m+1} = \beta_1 b_1 + \ldots + \beta_m b_m$ which contradicts linear independence of $\{b_1,\ldots,b_m, a_{m+1}, \ldots, a_n\}$. Therefore, we must have $m = n$. 
+
+\end{shaded}
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\item (\textbf{Perfect Codes}, Class 2) We say a code $\cC$ over $\F_q$ is $e$-perfect if it has distance $2e + 1$ and meets the Hamming bound: 
+\[ q^{n-k} = \Vol_q( n, e ). \]
+
+\begin{enumerate}
+	\item 
+Suppose that $\cC$ is a binary linear code of length $n$ and dimension $k$, with parity-check matrix $H \in \F_2^{n-k\times n}$.
+Show that $\cC$ is $e$-perfect if and only if, for all $v \in \F_2^{n-k}$, there is a unique way to write $v$ as a sum of at most $e$ columns of $H$.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+There is a unique way to write $v$ as a sum of at most $e$ columns of $H$ if and only if $Hu = v$ where $\text{wt}(u) \leq e$, since $Hu$ is the sum of $\text{wt}(u)$ columns of $H$. There are $\Vol_2(n, e)$ vectors $u$ of weight at most $e$, and since $\calc$ is $e$-perfect there are $2^{n-k}$ such vectors. There are $2^{n-k}$ such $v \in \bbf_2^{n-k}$, so it suffices to show that $H$ is injective on the set of vectors of weight at most $e$. 
+
+Suppose $Hu = Hu'$ for $\text{wt}(u), \text{wt}(u') \leq e$. Then $H(u - u') = 0$ so $u - u' \in \calc$. Since $\text{wt}(u - u') \leq 2e$ and $d = 2e+1$ is the minimum weight of a nonzero codeword, it must be that $u - u' = 0$, i.e. $u = u'$. Thus $H$ is injective on vectors of weight at most $e$.
+\end{shaded}
+
+
+	\item Conclude that the Hamming code is the only $1$-perfect binary linear code.  (Up to permutations of codeword symbols).
+
+\begin{shaded}
+\textbf{SOLUTION:}
+By part (a), if $\calc$ is $1$-perfect then for all $v \in \bbf_2^{n-k}$ there is a unique way to write $v$ as a sum of at most $1$ columns of $H$. In other words, every nonzero $v \in \bbf_2^{n-k}$ appears as a column of $H$. It follows by checking the dimensions of $H$ that $n = 2^{n-k}-1$, or $n = 2^r - 1$ and $k = 2^r - 1 - r$. By definition, this is the parity check matrix $H_r$ of the Hamming code of size $r$ (up to permutation of the columns).
+\end{shaded}
+
+	\item 
+Suppose that $\cC \subset \F_2^n$ is $e$-perfect.  Show that the nonzero codewords in $\cC^\perp$ take on at most $e$ distinct weights.  (Recall that the \em weight \em of a vector $x \in \F_2^n$ is the number of nonzero entries).
+
+[\textbf{Note: This one may be tricky. For partial credit you can just show this for $e=1$.}]
+(\underline{Hint 1:} Try it first for $e=1$.  \underline{Hint 2:} What can you say about the code 
+whose parity-check matrix has as columns all $(\leq e)$-wise sums of columns of $H$?  And, \underline{Hint 3:} Use part (a)).
+
+\begin{shaded}
+\textbf{SOLUTION:}
+We handle the case $e = 1$ first. Let $H \in \bbf_2^{(n-k) \times n}$ be the parity check matrix of $\calc$ such that $H^T \in \bbf_2^{n \times (n-k)}$ is the generator matrix for $\calc^{\perp}$, i.e. dual codewords are given by $H^T x$ for $x \in \bbf_2^{n-k}$. Since $\calc$ is a $1$-perfect binary code, it must be a Hamming code by part (b), i.e. $H = H_r$ for $r = n-k$ and $n = 2^r - 1$. The goal is to show that $H_r^T x$ and $H_r^T y$ have the same weight for any $x,y \in \bbf_2^{n-k} = \bbf_2^r$. Note for any $x,y$ there exists some invertible $A \in \bbf_2^{r \times r}$ such that $Ax = y$ (take $A = I + (y-x)\mathbf{1}$ where $\mathbf{1} = [1,\ldots,1] \in \bbf_2^{1\times r}$)
+so it suffices to show $H_r^T x$ and $H_r^T A x$ have the same weight. Having the same weight just means the vectors are permutations of each other, i.e. there exists a permutation matrix $P \in \bbf_2^{n \times n}$ such that $P H_r^T x = H_r^T A x$, so it suffices to show for any invertible $A$ that there exists a permutation matrix $P$ with $P H_r^T = H_r^T A$ or, equivalently,
+\[H_r P^T = A^T H_r\]
+Note that $A^T H_r$ is full rank since both $H_r$ and $A^T$ are full rank, and it has dimension $r \times (2^r-1)$. We showed in class that the only full-rank matrix of this dimension must be some permutation of the columns of the Hamming matrix $H_r$, which is exactly $H_r Q$ where $Q = P^T = P^{-1}$ is a permutation matrix.
+
+Now we handle the general case. Let $\tilde{H} = H X_e \in \bbf_2^{(n-k) \times (2^{n-k}-1)}$ where $X_e \in \bbf_2^{n \times (2^{n-k}-1)}$ is the matrix whose columns are the (nonzero) vectors of length $n$ with weight at most $e$. There are $\Vol_2(n,e) - 1$ such vectors by definition, but since $\calc$ is $e$-perfect there are $2^{n-k}-1$ such vectors. Note then that the columns of $\tilde{H}$ are all of the $\leq e$-wise sums of columns of $H$. Since $H, X_e$ are full rank, so is $\tilde{H}$. If we let $r = n - k$, we can see then that $\tilde{H} = H_r$ is (a permutation of) the Hamming matrix. 
+
+Then if $\tilde{\calc}$ is the code with $\tilde{H}$ as its parity check matrix, it is a Hamming code and therefore must be $1$-perfect. By the $e = 1$ case, the nonzero codewords of $\tilde{\calc}^{\perp}$ take on only $1$ weight. But
+\[\tilde{\calc}^{\perp} = \{\tilde{H}^T x \mid x \in \bbf_2^{n-k}\} = \{X_e^T H^T x \mid x \in \bbf_2^{n-k}\} = \{X_e^T c \mid c \in \calc^{\perp}\}\]
+Therefore there is some weight $t$ such that if $X_e^T c = v$ then $\text{wt}(v) = t$, for all $c \in \calc^{\perp}$. Equivalently, $c^T X_e = v^T$ where the weights of $c$ and $v$ are the same. By definition, $c^T X_e$ is the vector whose terms are all of the ways to sum $\leq e$ terms of $c^T$. 
+
+We will compute the weight of $v^T$ in two ways. We already know it is $t$, so the second way to is compute it combinatorially given $\text{wt}(c) = x$. Each entry of $v^T$ corresponds the sum of $1 \leq m \leq e$ entries of $c^T$, so the weight is equal to 
+\[\sum_{m=1}^e \#\{(i_1 < \ldots < i_m) \mid c_{i_1} + \ldots + c_{i_m} = 1\}\] 
+For $m = 1$, this is just the number of nonzero entries of $c$, i.e. $\text{wt}(c) = x$. For $m = 2$, this is the number of ways to pick a $1$ and a $0$ from $c$, which is $x(n-x)$. For $m = 3$ this is the number of ways to pick either a $1$ and two $0$'s, or three $1$'s, which is $x \binom{n-x}{2} + \binom{x}{3}$. 
+
+In general, this is the number of ways to pick an odd number ($2i+1$) of $1$'s and the rest ($m - (2i+1)$) $0$'s, which is 
+\[\#\{(i_1 < \ldots < i_m) \mid c_{i_1} + \ldots + c_{i_m} = 1\} = \sum_{i=0}^{\lfloor (m-1)/2 \rfloor} \binom{x}{2i+1} \binom{n-x}{m - (2i+1)}\] Therefore,
+\[t = \sum_{m=1}^e \sum_{i=0}^{\lfloor (m-1)/2 \rfloor} \binom{x}{2i+1} \binom{n-x}{m - (2i+1)}\]
+Each term of the double summation is a polynomial in $x$ of degree $[2i + 1] + [m - (2i+1)] = m$, and $m \leq e$, so $t = p(x)$ where $p$ is a polynomial with $\deg p \leq e$. In particular, $\deg(p - t) \leq e$. To summarize, for any $c \in \calc^{\perp}$ we have shown that if $\text{wt}(c) = x$ then $p(x) - t = 0$ where $\deg(p- t) \leq e$. Since polynomials of degree at most $e$ have at most $e$ roots, there are at most $e$ solutions $x$ to $p(x) - t = 0$, i.e. at most $e$ distinct weights of codewords in $\calc^{\perp}$
+\end{shaded}
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item \label{pr:lb}(\textbf{Another lower bound}, Class 2)
+\begin{enumerate}
+\item Show that if there exists a linear $(n,k,d)_q$ code, then there also exists a linear $(n-d,k-1,d')_q$ code for some $d' \geq \lceil d/q \rceil$. 
+
+You may find it useful to use the following algebra fact: for any nonzero $\alpha \in \F_q$, the set $\{ \alpha \cdot x \,:\, x \in \F_q\}$ is again $\F_q$.  That is, multiplication by $\alpha$ just permutes the elements of the field. 
+
+\underline{Hint:} Consider dropping the non-zero positions of a minimum-weight codeword from the code.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\item Show that if $\cC$ is a linear $(n,k,d)_q$ code, then 
+\[n \geq \sum_{i=0}^{k-1} \left\lceil \frac{ d}{q^i} \right\rceil.\]
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\item Show that the bound above can sometimes be stronger than the Hamming bound.  That is, find 
+	some values for $n,k,d$ (and let $q=2$) so that the Hamming bound is satisfied but the bound above is not.
+(\underline{Note:} If you do not (yet) have a very good intuition for how the volume term in the Hamming bound behaves, you could enlist a computer to find these parameters.  However, there is a small example ($n=7$), and you might learn more about how the Hamming bound behaves if you do it by hand.)
+
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item (\textbf{Simplex Codes}, Class 2)  Let $\cC_r = \mathcal{H}_r^\perp$, where $\mathcal{H}_r$ is the binary Hamming code of length $n = 2^r - 1$.   
+Notice that (by definition) a partity-check matrix for $\mathcal{H}$ is a generator matrix for $\cC_r$.  So the generator matrix for $\cC_r$ is the $n \times r$ matrix that contains every non-zero binary vector of length $r$ as a row.  Let $G \in \F_2^{n \times r}$ be this generator matrix, and let $g_i \in \F_2^r$ denote the $i$'th row of $G$.
+
+The code $\cC_r \subseteq \F_2^n$ is called the \emph{Simplex Code} or (a slight variant of it is called) the \emph{Hadamard Code}.
+
+\begin{enumerate}
+\item What is the dimension and distance of $\cC_r$?
+
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\item Suppose that $w \in \F_2^n$ and that there is some $c \in \cC_r$ so that $\Delta(w,c) < n/4$, where $\Delta$ denotes Hamming distance.  Explain (using your answer from part (a)) why there is no other codeword $c' \in \cC_r$ with $c \neq c'$ so that $\Delta(w,c') < n/4$.  Explain why this immediately suggests a straightforward algorithm for finding $c$, given $w$.  What is the running time of this algorithm, in terms of $n$?  (In big-Oh notation).
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\item Suppose that $w \in \F_2^n$ and that there is some $c \in \cC_r$ so that $\Delta(w,c) < n/4$.  In the rest of this part, we will motivate and analyze a more interesting algorithm for finding $c$, given $w$.  
+\begin{enumerate}
+\item Suppose without loss of generality that the first row of the generator matrix $G$ for $\cC_r$ is the first standard basis vector $(1,0,0, \ldots, 0)$.  Call this row $g_1 \in \F_2^r$.
+Let $g_i$ be any other row of $\cC_r$ (so $i \neq 1$). Explain why there is a unique row $g_j$ of $\cC_r$ so that  $g_i + g_j = g_1$.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\item Suppose that $g_1 = g_i + g_j$ for some $i,j$.
+Let $c = Gx$ be some codeword of $\cC_r$, where $x \in \F_2^r$ is the original message.
+Explain why $x_1 = c_i + c_j$.  (Recall that $g_1 = (1,0,\ldots, 0)$.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\item   Consider the following algorithm that is supposed to find $x_1$ (the first bit of the message), given $w$ (the corrupted codeword).
+\begin{verbatim}
+Given input w in F_2^n:
+     votes_for_0 = 0
+     if w_1 == 0:
+          votes_for_0 = votes_for_0 + 1
+     for each i=2,...,n:
+          Let g_j be the unique row of G so that g_i + g_j = g_1  (in F_2^r)
+          If w_i + w_j == 0: 
+               votes_for_0 = votes_for_0 + 1. 
+     If votes_for_0 > n/2:
+          return "x_1 = 0"
+     else return "x_1 = 1"
+\end{verbatim}
+What is the running time of this algorithm?  (In big-Oh notation)
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+
+\item Prove that the algorithm above indeed returns $x_1$.  (You will need to use the assumption that $\Delta(w,c) < n/4$).  
+
+\underline{Hint 1:} Use part (ii).
+
+\underline{Hint 2:} The rows of $G$ are broken up into pairs $\{g_i, g_j\}$ and the singleton $\{g_1\}$.  How many of these groups can be ``corrupted'', in the sense that they contain an index $i$ so that $w_i \neq c_i$? 
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+
+\item Adapt the algorithm above to recover all of $x$, given~$w$.  Your algorithm should run in time $O(n \mathrm{polylog}(n))$.
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Your solution here!
+\end{shaded}
+
+\end{enumerate}
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item (\textbf{Coordinated failure}, Class 2) Consider the following $n$-player cooperative game, for $n = 2^r - 1$.   The players $1,\ldots,n$ are placed in separate rooms and are not allowed to communicate during the game.
+$n$ values $x_1,\ldots,x_n \in \{0,1\}$ are drawn uniformly at random.
+Player $i$ is given $\{ x_j \,:\, j \neq i \}$, (along with labels, so she knows which $x_j$ belongs to which other player), and her goal is to guess $x_i$.  Player $i$ must say ``0," ``1," or ``pass," independently of all the other players.
+The players collectively lose if:
+\begin{itemize}
+	\item Everyone passes, \textbf{OR}
+	\item Any player $i$ reports a value that is not equal to $x_i$.
+\end{itemize} 
+The players collectively win if they do not lose.
+The players are allowed to strategize before the game begins.  
+\begin{enumerate}
+\item Find a strategy where the players win with probability $1 - 1/2^r$. 
+
+\begin{shaded}
+\textbf{SOLUTION:}
+Before the game, the players fix the following strategy. Let $\calh_r$ be the hamming code of length $n = 2^r - 1$, which has dimension $k = n - r$ and distance $d = 3$. Let player $k$'s string look like $x_1 \ldots x_{k-1} \bot x_{k+1}\ldots x_n$. If there is a codeword $c \in \calh_r$ such that $c_1 \ldots c_{k-1} c_{k+1} \ldots c_n = x_1 \ldots x_{k-1} x_{k+1} \ldots x_n$, player $k$ says "$\neg c_k$", i.e. the opposite bit of $c_k$. Otherwise, player $k$ says "pass". 
+
+Since $\calh_r$ has distance $d = 3$, every $x \in \{0,1\}^n$ is distance $\leq \lfloor (d-1)/2 \rfloor = 1$ away from a unique codeword $c \in \calh_r$. Thus, either $x \in \calh_r$ or it differs in exactly $1$ bit from a unique codeword $c \in \calh_r$. If $x \in \calh_r$ the players lose since player $1$ matches $\bot x_2 \ldots x_n$ with the codeword $c = x$ and so says "$\neg x_1$", which is the wrong bit. If $x \not \in \calh_r$ the players win. Let $c$ be the unique codeword distance $1$ from $x$, and suppose $x_k = \neg c_k$. Player $i$ will pass for $i \neq k$ since if $x_1 \ldots x_{i-1} \bot x_{i+1} \ldots x_k \ldots x_n$ is a codeword $c'$ for some value of $\bot$, then $c'$ and $c = x_1 \ldots x_{i-1}x_i x_{i+1} \ldots \neg x_k \ldots x_n$ are distance at most $2$ away, differing in only the $i$th and $k$th bits. This is a contradiction since $d = 3$. Player $k$ will see that $x_1 \ldots x_{k-1} \bot x_{k+1} \ldots x_n$ matches $c$ since they differ only at $x_k$, and so player $k$ will say "$\neg c_k$" which equals $x_k$, the correct bit. 
+
+Therefore the players win if and only if $x$ is not a codeword, which happens with probability $1 - 1/2^r$. There are $2^k = 2^{n-r}$ codewords and $2^n$ choices for $x$, so the probability $x \in \calh_r$ is $2^{n-r}/2^n = 1/2^r$. 
+\end{shaded}
+
+\item Prove that your strategy is optimal. 
+
+\begin{shaded}
+\textbf{SOLUTION:}
+For a fixed (deterministic) strategy, let $P(\text{player } k \text{ guesses correct}) = \#(x \in \{0,1\}^n\text{ such that player } k \text{ says the correct bit})/2^n$ and similarly for incorrect guesses. In any strategy, players have an equal chance of guessing the correct and incorrect bit since they gain no information from the other players (but not necessarily 50-50 since they can pass). Then
+\[\sum P(\text{player } k \text{ guesses correct}) = \sum P(\text{player } k \text{ guesses incorrect})\]
+so, by definition,
+\[\bbe[\#\text{correct guesses}] = \bbe[\#\text{incorrect guesses}]\]
+Then $P(\text{win}) \leq P(\# \text{ correct guesses }\geq 1) \leq \bbe[\#\text{correct guesses}] = \bbe[\# \text{incorrect guesses}]$. Since the players lose if at least one person guesses incorrectly, $P(\text{player } k \text{ guesses incorrect}) \leq P(\text{loss})$. Then we must have $\bbe[\# \text{incorrect guesses}] \leq n P(\text{loss})$.
+\[1 = P(\text{win}) + P(\text{loss}) \leq (n+1) P(\text{loss})\]
+and so $P(\text{loss}) \geq 1/(n+1) = 1/2^r$, i.e. $P(\text{win}) \leq 1 - 1/2^r$.
+
+\end{shaded}
+
+\end{enumerate}
+
+\underline{Hint:} Try it first for $n=3$ to get some intuition.  
+
+\underline{Hint 2:} The fact that $n = 2^r - 1$ is not an accident.
+
+\underline{Hint 3:} The title of this problem might be a hint too.
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Section 3}
+\setcounter{section}{3}
+(These problems are not required and may be open-ended.  If you try them, you can tag them in gradescope and we'll make a note of it and give you any feedback we have.)
+\begin{enumerate}
+	\item Hamming codes are the best (that is, with the largest size $|\cC|$) codes with distance $3$ and length $n = 2^r - 1$.  What about other values of $n$?  In particular, what is the best code you can come up with with distance $3$ and length 6? What about length 10? 16? 20?  Do you think your constructions are optimal?  What if you just need to find the best linear code with these parameters?
+	\item In Section 2, you showed that all $e$-perfect linear codes have at most $e$ different possible weights of dual codewords.  Show the converse: that any code whose dual has only $e$ different nonzero weights is $e$-perfect.  What is the simplest proof you can find of this fact?	
+	\item In Section 2, you showed that the Hamming code is the only $1$-perfect binary linear code. (We also saw this in class!)  We saw in class that this doesn't extend to non-linear codes.  Can you find (or interestingly characterize) \em all \em the $1$-perfect binary non-linear codes of a given length?
+\end{enumerate}
+
+\end{document}

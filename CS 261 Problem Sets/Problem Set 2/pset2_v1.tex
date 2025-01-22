@@ -1,0 +1,127 @@
+%% LyX 2.4.2.1 created this file.  For more info, see https://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[10pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\synctex=-1
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\pdfoutput=1
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts, standard}
+\usepackage{bbm}
+\usepackage{bbold}
+\usepackage[basic]{complexity}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage{algorithmic}
+\usepackage[ruled]{algorithm}
+\usepackage{fullpage}
+
+\definecolor{shadecolor}{gray}{0.95}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\include{general_notation}
+\title{\textbf{Combinatorial Optimization}\\
+\textbf{Problem Set \#2 (Winter 2025)}}
+\author{Instructor: Aaron Sidford (sidford@stanford.edu)\\
+CA: Ta-Wei Tu (taweitu@stanford.edu)}
+\date{}
+
+\maketitle
+This problem set is due Friday, January 24 at 5PM on Gradescope. Feel
+free to discuss the problems with whoever you wish, but make sure
+that the writing for your submission is entirely your own. As with
+all assignments and exams in this course, unless stated otherwise,
+you must prove your answers. You may use without proof anything proved
+in the required reading (though you must clearly state what facts
+you use).
+
+Some of the problems may have \emph{hints}, which may be helpful for
+solving the problem, \emph{remarks,} which give some extra context,
+and \emph{bonuses}, which are optional, count for 0 points, and will
+only be use to effect grades on the boundary (e.g., help determine
+A+ grades), but are potentially interesting. It is possible to ignore
+these hints, remarks, and bonuses and still obtaining a full score.
+
+\textbf{\emph{These problem may ask you to prove something claimed
+in the notes or in class. You cannot use those specific claims without
+proof in your solution to the associated problems. :-)}}
+
+\section*{Problem 1 {[}20 points{]}: Fast Cycle Decomposition}
+
+For each of the problems below let $G=(V,E)$ be a simple, $n$-node,
+$m$-edge unit capacity graph. Further, call $C=e_{1},...,e_{k}$
+a \emph{simple cycle} if each $e_{i}=(a_{i},b_{i})$ with $a_{i+1}=b_{i}$
+for all $i\in[k-1]$ and $b_{k}=a_{1}$ and the $a_{i}$ are distinct.
+Note that $(a,b),(b,a)$ for $a\neq b$ is a simple cycle.\\
+\\
+\textbf{Part (a) {[}10 points{]}}: Prove that if each $a\in V$ has
+out-degree at least 1, i.e., there exists $(a,b)\in E$, then $G$
+has a simple cycle and there is an algorithm which provably finds
+one in $O(n)$ time. You may assume that the input is given as the
+adjacency list of the graph (i.e., a linked list of vertices where
+each entry in the linked list holds a pointer to the list of edges
+incident to the corresponding vertex).\\
+\begin{shaded}
+    test
+\end{shaded}
+\textbf{Part (b) {[}10 points{]}}: Let $f\in\{0,1\}^{E}$ be a circulation,
+i.e., $f_{e}\in\{0,1\}$ for all $e\in E$, and $\im(f)_{v}=0$ for
+all $v\in V$. Prove that there exist simple cycles $C_{1},...,C_{k}\subseteq E$
+such that $f=\sum_{i\in[k]}c_{i}$ where $c_{i}=\indicVec{C_{i}}$
+is the indicator vector for $C_{i}$, i.e.,
+\[
+[c_{i}]_{e}=[\indicVec{C_{i}}]_{e}=\begin{cases}
+1 & \text{ if }e\in C_{i}\\
+0 & \text{otherwise}
+\end{cases}\,.
+\]
+\textbf{\emph{Bonus}}\emph{: Provide an algorithm that computes the
+$C_{i}$} in part (b) in $O(|E|)$ time.\\
+\textbf{\emph{}}\\
+\textbf{\emph{Remark}}\emph{: Part (a) asks for a sublinear time algorithm
+(whenever $m=\omega(n)$) for finding cycles in a graph. Part (b)
+then builds upon this to prove that integer circulations can be decomposed
+into simple cycles. Part (b) is essentially equivalent to proving
+that Eulerian graphs, i.e., those where for every vertex its weighted
+out-degree equals its weighted in-degree, can be decomposed into simple
+cycles.}
+
+\pagebreak{}
+
+\section*{Problem 2 {[}25 Points{]}: Faster Dense Unit Capacity Maximum Flow}
+
+For each of the following questions, consider the problem of computing
+a $s$-$t$ maximum flow on a simple, $n$-node, $m$-edge unit capacity
+graph $G=(V,E)$. Let $v_{*}$ denote the value of the maximum flow
+in this instance and suppose $v_{*}>0$.\\
+\\
+\textbf{Part (a) {[}15 points{]}}: Prove that if $v_{*}>0$ then $v_{*}=O((n/d)^{2})$
+where $d$ is the length of the shortest $s$-$t$ path in $G$.\textbf{\emph{}}\\
+\textbf{\emph{}}\\
+\textbf{Part (b) {[}10 points{]}}: Provide an algorithm that provably
+computes an $s$-$t$ maximum flow in $O(mn^{2/3})$.\textbf{\emph{}}\\
+\textbf{\emph{}}\\
+\textbf{\emph{Bonus}}\emph{: Show that part (a) is un-improvable in
+the worst case, in that for every integer $v_{*},d\geq6$ there is
+a unit capacity graph with $O(v_{*}+d\sqrt{v_{*}})$ nodes such that
+the value of the $s$-$t$ maximum flow is $v_{*}$ and the length
+of the shortest path from $s$ to $t$ is $d$. }\\
+\emph{}\\
+\textbf{\emph{Remark}}\emph{: Together with what is proved in the
+lecture notes, this shows that there is an $O(m\cdot\min\{m^{1/2},n^{2/3}\})$
+time maximum flow algorithm for unit-capacity graph. This was the
+state-of-the-art for almost 30 years until progress in the mid 2010s.}
+\end{document}
