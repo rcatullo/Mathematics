@@ -1,0 +1,85 @@
+%% LyX 2.4.3 created this file.  For more info, see https://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[10pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\synctex=-1
+\usepackage{standard}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\pdfoutput=1
+
+\usepackage{bbm}
+\usepackage{bbold}
+\usepackage[basic]{complexity}
+\usepackage{algorithmic}
+\usepackage[ruled]{algorithm}
+\usepackage{fullpage}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\include{general_notation}
+\title{\textbf{Combinatorial Optimization}\\
+\textbf{Problem Set \#3 (Winter 2025)}}
+\author{Instructor: Aaron Sidford (sidford@stanford.edu)\\
+CA: Ta-Wei Tu (taweitu@stanford.edu)}
+\date{}
+
+\maketitle
+This problem set is due Friday, January 31 at 5PM on Gradescope. Feel
+free to discuss the problems with whoever you wish, but make sure
+that the writing for your submission is entirely your own. As with
+all assignments and exams in this course, unless stated otherwise,
+you must prove your answers. You may use without proof anything proved
+in the required reading (though you must clearly state what facts
+you use).
+
+Some of the problems may have \emph{hints}, which may be helpful for
+solving the problem, \emph{remarks,} which give some extra context,
+and \emph{bonuses}, which are optional, count for 0 points, and will
+only be use to effect grades on the boundary (e.g., help determine
+A+ grades), but are potentially interesting. It is possible to ignore
+these hints, remarks, and bonuses and still obtaining a full score.
+
+\section*{Problem 1 {[}10 Points{]}: Directing an Undirected Graph}
+
+Let $G=(V,E)$ be an undirected graph and $\mu\in\Z_{>0}^{V}$. We
+say that $G$ is \emph{$\mu$-orientable }if we can replace each undirected
+$\{u,v\}\in E$ with one of $(u,v)\in E$ or $(v,u)\in E$ such that
+that $\mathrm{deg}_{\mathrm{out}}(u)\defeq|\{(u,v)\in E\}|$ satisfies
+$\mathrm{deg}_{\mathrm{out}}(u)\leq\mu(u)$ for each $u\in V$. Provide
+a polynomial time algorithm that given $G$ and $\mu$ provably outputs
+whether or not $G$ is $\mu$-orientable.
+\begin{shaded}
+SOLUTION: 
+\end{shaded}
+
+\textbf{Bonus:} Prove that $G$ is $\mu$-orientable if and only if
+$|F|\leq\mu(V(F))$ holds for all $F\subseteq E$, where $V(F)$ is
+the set of endpoints of $F$ and $\mu(S)\defeq\sum_{v\in S}\mu(v)$.
+
+\section*{Problem 2 {[}20 Points{]}: Vertex Disjoint Path}
+
+Provide an $O(m\sqrt{n})$ time algorithm that given a strongly connected
+$n$-node $m$-edge directed graph $G=(V,E)$ and vertices $s$ and
+$t\in V$ with $s\neq t$ computes a set of vertex-disjoint (other
+than $s$ and $t$) $s$-$t$ paths of maximum size (in terms of the
+number of paths).
+
+\section*{Problem 3 {[}10 Points{]}: Restricted Simple Path}
+
+Provide an $O(m)$ time algorithm that given a connected undirected
+graph $G=(V,E)$ with $m=|E|$ and three nodes, $u,v,w\in V$ outputs
+a simple path from $u$ to $w$ passing through $v$ (provided one
+exists).\\
+\emph{}\\
+\textbf{\emph{Hint}}\emph{: It may be helpful to solve parts of problem
+2 first}.
+\end{document}

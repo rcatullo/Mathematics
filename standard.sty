@@ -22,6 +22,7 @@
 \RequirePackage{tocloft}
 \RequirePackage{extarrows}
 \RequirePackage{mathtools}
+\RequirePackage{listings}
 \RequirePackage[toc,page]{appendix}
 \RequirePackage[backend=biber,style=alphabetic]{biblatex} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,6 +76,17 @@ innerleftmargin=0pt,innerrightmargin=0pt,roundcorner=0pt, linewidth=0pt}
 %% PARAGRAPH INDENT %%
 \setlength{\parindent}{0pt}
 %%%%%%%%%%%%%%%%%%%%%%
+
+%% LISTINGS ENVIRONMENT %%
+\lstset{basicstyle=\ttfamily,
+escapeinside={||},
+mathescape=true}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% SHADED ENVIRONMENT %%
+\definecolor{shadecolor}{gray}{0.95}
+%%%%%%%%%%%%%%%%%%%%%%%%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%% THEOREM ENVIRONMENTS %%%%%%%%%%%%%%%%

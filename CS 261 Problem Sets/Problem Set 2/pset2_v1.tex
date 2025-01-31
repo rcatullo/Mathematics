@@ -26,8 +26,6 @@
 \usepackage[ruled]{algorithm}
 \usepackage{fullpage}
 
-\definecolor{shadecolor}{gray}{0.95}
-
 \makeatother
 
 \usepackage{babel}
@@ -75,7 +73,25 @@ adjacency list of the graph (i.e., a linked list of vertices where
 each entry in the linked list holds a pointer to the list of edges
 incident to the corresponding vertex).\\
 \begin{shaded}
-    test
+    We use the following naive idea. Pick a random start vertex $v_1$, and retrieve the list of vertices adjacent to $v_1$ (which is guaranteed to be nonempty). Take any edge $e_1 = (v_1,v_2) \in E$ and let $\tilde{V} = \{v_1,v_2\}$ store an unordered list of vertices and $\tilde{E} = (e_1)$ an ordered list of edges. Now get the list of adjacent vertices to $v_2$, and pick any vertex $v_3$ such that $e_2 = (v_2, v_3)$ is an edge. If $v_3 = v_i \in \tilde{V}$ for some $i < 3$ (which we can check in $O(1)$) return $C = (e_i, \ldots, e_2)$, otherwise add $v_3$ to $\tilde{V}$ and let $\tilde{E} = (e_1, e_2)$. Continue this process until $v_k = v_i \in \tilde{V}$ for some $i < k$.
+    \begin{lstlisting}
+    |\hrule \textbf{Simple Cycle Algorithm} \hrule|
+input :Graph $G = (V,E)$, $V$ linked list of vertices.
+        Each $v \in V$ points to list of edges incident to $v$.
+        $G$ has out-degree at least $1$ at every vertex.
+Let $v_1 \in V$
+Let $\tilde{V} = \{v_1\}$
+Let $\tilde{E} = ()$
+for (k = 1; k < n; k++) :
+    Let $I := $ list of edges pointed to by $v_k$
+    Let $e_k := (v_k, v_{k+1}) = I[0]$
+    if $v_{k+1} = v_i \in \tilde{V}$ :
+        return $C = e_i \ldots e_{k}$
+    else :
+        $E = e_1 \ldots e_{k+1}$ // append $e_{k+1}$ to $E$
+|\hrule|
+    \end{lstlisting}
+    This finds a cycle in $O(n)$. Since $V$ is finite, $\tilde{V}$ can hold at most $n$ vertices which means the for loop goes through at most $n$ iterations before returning, i.e. a value is always returned. The $C$ that is returned is always a cycle because each edge $(v_i, v_{i+1})$ is chosen such that the next edge $(v_{i+1}, v_{i+2})$ shared vertex $v_{i+1}$, i.e. it is a path, and if $v_i$ is the first vertex that has been visited before by $e_1 \ldots e_{i-1}$ then it must be $v_j \in \tilde{V}$ for some $1 \leq j < i$. Then $e_i = (v_i, v_{i+1}) = (v_i, v_j)$ connects to $e_j = (v_j, v_{j+1})$, and since this is the first such vertex every two edges in $e_j \ldots e_i$ are distinct, i.e. this is a cycle.
 \end{shaded}
 \textbf{Part (b) {[}10 points{]}}: Let $f\in\{0,1\}^{E}$ be a circulation,
 i.e., $f_{e}\in\{0,1\}$ for all $e\in E$, and $\im(f)_{v}=0$ for
@@ -88,6 +104,17 @@ is the indicator vector for $C_{i}$, i.e.,
 0 & \text{otherwise}
 \end{cases}\,.
 \]
+\begin{shaded}
+    We continue by induction on the number of edges $m$. If $m = 1$ then this vacuously holds for no cycles since any circulation must have $f_e = 0$ on the unique edge. 
+    
+    Suppose this holds for all graphs with $\leq m - 1$ edges, and let $G$ be a graph with $m$ edges. Let $G'$ be $G$ with all weight $0$ edges from $G$ removed. If we removed at least one edge then by the inductive hypothesis there are cycles such that $f = \sum_{i=1}^k c_i$ on $G'$. Note this also then holds on $G$ since on weight $0$ edges, $f_e = 0 = \sum_{i=1}^k [c_i]_e$ as $C_i$ do not contain the edges $e$ we removed.
+
+    Therefore, suppose $G$ has all $m$ edges with $f_e = 1$. Let $G_0$ be a connected component of $G$ with at least one edge. Note that $\im(f)_v = 0$ for every $v \in G_0$ since the edges incident to $v$ in $G$ and $G_0$ are the same. Therefore every vertex in $G_0$ must have at least one outgoing edge since otherwise it would just have incoming edges (by connectedness of $G_0$ it has at least $1$ edge) and hence nonzero imbalance.
+    
+    By part (a), we can find a simple cycle $C_1$ in $G_0$. Note that removing edges in a cycle does not change $\im(f)_v = 0$ for all $v \in G_0$ since every vertex in the cycle has exactly one incoming and one outgoing edge. The same $\im(f)_v =0$ also holds for vertices in $G$ not in $G_0$ since we don't change any edges incident to them when removing $C_1$ by connectedness of $G_0$. Therefore, by the inductive hypothesis on $(V, E \setminus C_1)$, there are disjoint simple cycles $C_2, \ldots, C_k$ such that $f = \sum_{i=2}^k c_i$ on edges in $E \setminus C_1$. We will show that $f = \sum_{i=1}^k c_i$ on all edges in $E$.
+
+    If $e \in C_1$ then $[c_i]_e = 0$ for $i = 2,\ldots,k$ since we chose them as subsets of $E \setminus C_1$, so $f_e = [c_1]_e = 1$. If $e \not \in C_1$ then $[c_1]_e = 0$, and by the inductive hypothesis $\sum_{i=1}^k [c_i]_e = \sum_{i=2}^k [c_i]_e = f_e$. By induction on $m$, for any graph $G$ and circulation $f$ there exist simple cycles $C_1,\ldots,C_k \subseteq E$ such that $f = \sum_{i=1}^k c_i$.
+\end{shaded}
 \textbf{\emph{Bonus}}\emph{: Provide an algorithm that computes the
 $C_{i}$} in part (b) in $O(|E|)$ time.\\
 \textbf{\emph{}}\\
@@ -111,9 +138,32 @@ in this instance and suppose $v_{*}>0$.\\
 \textbf{Part (a) {[}15 points{]}}: Prove that if $v_{*}>0$ then $v_{*}=O((n/d)^{2})$
 where $d$ is the length of the shortest $s$-$t$ path in $G$.\textbf{\emph{}}\\
 \textbf{\emph{}}\\
+\begin{shaded}
+    Let $L_i = \{v \in V \mid d(v) = i\}$ be the set of vectors of minimum distance at most $i$ from $s$. Let $S_i = \{(v,w) \in E \mid v \in L_{i-1}, w \in L_i\}$ be the set of edges $(v,w)$ where $v$ is minimum distance $i-1$ and $w$ is minimum distance $i$ from $s$. Each of $S_1, \ldots, S_d$ is an $s-t$ cut since $d$ is the minimum distance between $s$ and $t$ by definition.
+    Let $\ell_i = |L_i|$ and note that $|S_i| \leq \ell_{i-1} \ell_i$ since our graph is simple, i.e. no repeated edges between two nodes. The $L_i$ are disjoint, and so $\ell_0 + \ldots + \ell_d \leq n$. Suppose that $\ell_{i-1} \ell_i \geq n^2/d^2$ for all $i = 1, \ldots, d$. Then by AM-GM, $\frac{\ell_{i-1} + \ell_i}{2} \geq n/d$ so by summing over $i = 1, \ldots, d$ we get
+    \[\ell_0/2 + \ell_1 + \ldots + \ell_{d-1} + \ell_d/2 \geq n\]
+    which implies $\ell_0 + \ldots + \ell_d > n$, a contradiction. Therefore, we must have that $\ell_{i-1}\ell_i < n^2/d^2$ for some $i = 1, \ldots, d$, which means $|S_i| < n^2/d^2$. Since the max flow $v_*$ is bounded above by the min cut, and $S_i$ is a cut of capacity $|S_i|$ since the graph is unit capacity, $v_* \leq |S_i| < n^2/d^2$.
+\end{shaded}
 \textbf{Part (b) {[}10 points{]}}: Provide an algorithm that provably
 computes an $s$-$t$ maximum flow in $O(mn^{2/3})$.\textbf{\emph{}}\\
 \textbf{\emph{}}\\
+\begin{shaded}
+We use the blocking flow algorithm, Algorithm 7.1 in the notes.
+    \begin{lstlisting}
+|\hrule| |\textbf{Max Flow Algorithm}| |\hrule|
+input : unit capacitated simple graph and vertices $s,t \in V$ with $s \neq t$
+Let $f_0 = 0 \in \mathbb{R}^E$ and $i = 0$
+while $d_{f_i}(t) \neq \infty$ do :
+    Compute blocking flow $r_i$ in $\call_{f_i}$
+    Let $f_{i+1}$ := augment($f_i$, $r_i$)
+    $i$ := $i + 1$
+end
+Return $f_i$
+    \end{lstlisting}
+By Theorem 7.7 we can compute a blocking flow in $O(m)$, and it always returns a maximal flow by Theorem 7.6 in the notes, so we need to bound the number of iterations of the loop by $O(n^{2/3})$ as in Theorem 7.9 using our bound from part (a). 
+
+By Lemma 7.5 in the notes $d_{f_{i+1}}(t) \geq d_{f_i}(t)$ for all $i$, and since distances are positive this implies $d_{f_i}(t) \geq i$ for all $i$ in which the while loop has not yet terminated. Suppose the while loop has not terminated for $i = \lceil n^{2/3} \rceil$ such that $d_{f_i}(t) \geq \lceil n^{2/3} \rceil$. Note that $G_{f_i}$ is still a simple unit capacity graph since if $(v,w) \in E$ then $(w,v)$ is added to $E_{f_i}$ with capacity $[f_i]_{(v,w)}$ which is either $1$ or $0$ (and $(v,w) \in E_{f_i}$ has capacity $u_{(v,w)} - [f_i]_{(v,w)}$ which is $1$ or $0$), hence we still don't have multiple edges and the new edges are unit capacity. Further note that $d_{f_i}(t)$ is by definition the length of the shortest $s$-$t$ path (along nonzero capacity edges) in $G_{f_i}$. By part (a), $v_*(G_{f_i}) = O(n^2/d_{f_i}(t)^2) = O(n^2/n^{4/3}) = O(n^{2/3})$. Since each iteration of the algorithm must increase $v(f_i)$ by at least $1$ and therefore decrease $v_*(G_{f_i})$ by at least $1$, it must be that the algorithm terminates in an additional, at most, $O(n^{2/3})$ iterations and therefore the algorithm terminates in $O(mn^{2/3})$ time.
+\end{shaded}
 \textbf{\emph{Bonus}}\emph{: Show that part (a) is un-improvable in
 the worst case, in that for every integer $v_{*},d\geq6$ there is
 a unit capacity graph with $O(v_{*}+d\sqrt{v_{*}})$ nodes such that
