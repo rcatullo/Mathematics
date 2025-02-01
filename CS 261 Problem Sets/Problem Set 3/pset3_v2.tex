@@ -14,6 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \pdfoutput=1
 
+
 \usepackage{bbm}
 \usepackage{bbold}
 \usepackage[basic]{complexity}
@@ -57,8 +58,15 @@ that $\mathrm{deg}_{\mathrm{out}}(u)\defeq|\{(u,v)\in E\}|$ satisfies
 $\mathrm{deg}_{\mathrm{out}}(u)\leq\mu(u)$ for each $u\in V$. Provide
 a polynomial time algorithm that given $G$ and $\mu$ provably outputs
 whether or not $G$ is $\mu$-orientable.
+
 \begin{shaded}
-SOLUTION: 
+SOLUTION: Construct a new directed graph $G'$ with vertices $s,t$, $v \in V$, and $e \in E$. That is, there are $m + n + 2$ vertices in the new graph with $n$ corresponding to the vertices in $G$, $m$ corresponding to the edges in $E$, and a source and sink vertex. Let our edges $E'$ be $(s, e)$ for every $e \in E$ of capacity $1$, and $(v, t)$ of capacity $\mu(v)$ for every $v \in V$. Give an edge $(e, v)$ of capacity $1$ if $v$ is incident to $e$, i.e. $e = \{v,u\}$ for some $u \in V$.
+
+Then $G$ is $\mu$-orientable if and only if the max flow $v_*(G') = m$. Note that $\deg_{\text{out}}(s) = m$ so $v_*(G') \leq m$ always. Suppose $v_*(G') = m$ with max flow $f$. For each edge $e \in G$, $f_{(s,e)} = 1$ so the outgoing flow from vertex $e$ is $1$. If $e = \{v,u\}$ then $f_{(e,v)} = 1$ and $f_{(e,u)} = 0$ up to reordering of $u$ and $v$. In the new directed graph, we let $e = (v,u)$, i.e. if the flow of $(e,v)$ is $1$ in $G'$ then we orient the edge such that $v$ is the initial vertex of $e$. Then the outdegree of $v$ in this new oriented graph is at most $\mu(v)$. To see this, note that in $G'$ the capacity of $(v,t)$ is $\mu(v)$, which means at most $\mu(v)$ edges $e$ have $f_{(e,v)} = 1$. That is, at most $\mu(v)$ edges have $v$ as the initial vertex. It follows that $G$ is $\mu$-orientable.
+
+Suppose $G$ is $\mu$-orientable. Then we follow the steps in reverse and construct a flow of value $m$. Send $1$ unit of flow along each $(s,e)$ in $G'$. If $e = \{v,u\}$ is oriented with $v$ as its initial vertex in the $\mu$-oriented graph, let $f_{(e,v)} = 1$ and $f_{(e,u)} = 0$. Finally, let $f_{(v,t)} = \deg_{\text{out}}(v) \leq \mu(v)$ by assumption, so the flow imbalance across $v$ in $G'$ is $0$ and the capacity of $(v,t)$ is respected. It follows that $f$ defines a flow of value $m$ since all interior vertices are balanced and $m$ units of flow are sent out of $s$. 
+
+Ford-Fulkerson gives us the max flow in time $O((m + 2m + n)m) = O(m^2 + mn)$ since $v_* \leq m$ and $G'$ has $m + 2m + n$ edges, which is polynomial.
 \end{shaded}
 
 \textbf{Bonus:} Prove that $G$ is $\mu$-orientable if and only if
@@ -72,6 +80,25 @@ $n$-node $m$-edge directed graph $G=(V,E)$ and vertices $s$ and
 $t\in V$ with $s\neq t$ computes a set of vertex-disjoint (other
 than $s$ and $t$) $s$-$t$ paths of maximum size (in terms of the
 number of paths).
+\begin{shaded}
+    SOLUTION: Construct a new graph $G'$ as follows. For every interior vertex of $G$ (i.e. vertex besides $s,t$), let $v_{in} \neq v_{out}$ be new vertices in $V'$, and let $s = s_{in} = s_{out}$ and $t = t_{in} = t_{out} \in V'$. Construct edges $(v_{in}, v_{out}) \in E'$ of capacity $1$ for all $v \in V$ except $s,t$, and for all $e = (v, u) \in E$ construct an edge $(v_{out}, u_{in}) \in E'$ of capacity $1$.
+    
+    Any positive flow on $G'$ corresponds to $v_*(f)$ vertex-disjoint paths from $s$ to $t$ in the original graph. If $f$ is a flow on $G'$, we construct the paths on $G$ by letting $e = (v,u) \in G$ be part of the path if and only if $f_{(v_{out}, u_{in})} = 1$. There are a few things to check:
+    \begin{itemize}
+        \item \textit{These are valid $s$-$t$ paths:} Since the flow on $G'$ is positive, $f_{(s,v_{in})} = 1$ for at least one vertex $v$ which means there is an edge in these paths $(s,v)$ leaving $s$. Similarly there is at least one edge entering $t$. If an edge $e = (v,u)$ is part of the path then the flow into $u_{in}$ is $1$, which means the flow into $u_{out}$ is $1$, and so the flow out of $u_{out}$ is also $1$, i.e. there is another vertex $w$ such that $(u,w)$ is part of the path. Suppose there are two edges in the path $(v, u), (v, w)$ that are not vertex disjoint. Then $f_{(v_{out}, u_{in})} = 1$ and $f_{(v_{out}, w_{in})} = 1$ which means two units of flow are leaving $v_{out}$. But $v_{out}$ only has $1$ incoming vertex $v_{in}$ of capacity $1$, so this is a contradiction. The claim follows.
+        \item \textit{There are $v_*(f)$ paths}: Note that the flow leaving $s$ in $G'$ is $v_*(f)$, which means there are this many edges $(s,v)$ in $G$ such that $f_{(s, v_{in})} = 1$. These are all chosen by the above correspondance so we see that we get $v_*(f)$ vertex-disjoint paths in this way. 
+        \item \textit{Any $k$ vertex-disjoint $s$-$t$ paths in $G$ gives a flow $f$ on $G'$ with $v_*(f) = k$:} Suppose we have these paths on $G$. Then for every $(v,u)$ in the edges in the paths, send $1$ unit of flow along $(v_{out}, u_{in})$ and $1$ unit of flow along $(u_{in}, u_{out})$. This is clearly a valid flow since at the internal vertices $v$ of $G$, there is exactly one edge leaving $v$ and one entering $v$, which means $1$ unit of flow is sent into and out of $v_{in}$ and the same for $v_{out}$. Since there are $k$ edges $(s, v)$ in the paths leaving $s$, there are $k$ units of flow sent out of the edges $(s, v_{in})$ and so this flow clearly has value $k$.
+    \end{itemize}
+    It follows that the maximum number of vertex-disjoint paths in $G$ is exactly the max flow of $G'$. The vertex-disjoint paths in $G$ is a special case of an $s$-$t$ flow on $G$ if we give every edge unit capacity. Denote this flow in $G$ corresponding to a flow $f$ on $G'$ by $f_G$. 
+    
+    Then $G'_f = (G_{f_G})'$, i.e. the residual graph under $f$ of $G'$ equals the graph obtained by applying the construction from $G$ to $G'$ above to the residual graph $G_{f_G}$, albeit with different vertex and edge labelings. If $f$ sends $1$ unit of flow across $\ldots\to v_{out} \to u_{in} \to u_{out} \to w_{in} \to \ldots$ in $G'$, then in $G'_f$ these edges are reversed $\ldots\leftarrow v_{out} \leftarrow u_{in} \leftarrow u_{out} \leftarrow w_{in} \leftarrow \ldots$ with capacity $1$, and all edges with flow $0$ are unchanged. $G_{f_G}$ reverses the corresopnding edges $\ldots \leftarrow v \leftarrow u \leftarrow w \leftarrow \ldots$, and $G_{f_G}'$ separates these into in and out vertices. If we change the labeling the claim is obvious. 
+
+    Then a flow on the residual graph $G'_f$ gives $v_*(G'_f)$ vertex-disjoint $s$-$t$ paths on $G_{f_G}$ by the above argument. Each path has at least $d_{f_G}(t)-1$ vertices besides $s$ and $t$, where $d_{f_G}(t)$ is the length in edges of the shortest path from $s$ to $t$ in $G_{f_G}$. Since the paths are vertex-disjoint, 
+    \[v_*(G'_f)(d_{f_G}(t) - 1) \leq n\]
+    and, since $d_f(t)/2 \leq d_{f_G}(t) - 1$ (we can construct an $s$-$t$ path in $G'_f$ of this distance by taking the shortest path in $G_{f_G}$ and adding the edges $v_{in}\to v_{out}$ or $v_{out}\to v_{in}$ for every intermediate $v$ in the path),
+    \[v_*(G'_f) \leq \frac{2n}{d_{f}(t)}\]
+    We can replace the bound in Lemma 7.8 in the notes with this, and apply it in Theorem 7.9 to show that running the blocking flow algorithm on $G'$ to compute $v_*(G')$ runs in time $O(m \sqrt{n})$. Roughly, every iteration runs in $O(m)$ so we need to show it terminates for some $i = O(\sqrt{n})$. Since $d_{f_i} \geq i$ for all $i$ in which the algorithm has not terminated, if $i \geq \lceil \sqrt{n} \rceil$ then $d_{f_i} \geq \sqrt{n}$. By the above bound, $v_*(G'_{f_i}) \leq 2\sqrt{n}$. Since the algorithm decreases $v_*(G'_{f_i})$ in every iteration, it must run for at most another $2 \sqrt{n}$ iterations, so it terminates in time $O(\sqrt{n})$ and the claim follows.
+\end{shaded}
 
 \section*{Problem 3 {[}10 Points{]}: Restricted Simple Path}
 
@@ -79,7 +106,17 @@ Provide an $O(m)$ time algorithm that given a connected undirected
 graph $G=(V,E)$ with $m=|E|$ and three nodes, $u,v,w\in V$ outputs
 a simple path from $u$ to $w$ passing through $v$ (provided one
 exists).\\
-\emph{}\\
+\begin{shaded}
+    SOLUTION: Construct a graph $G'$ as follows. Let $s,t$ be source and sink vertices, and let $u,v,w \in V'$. Then for every other vertex $a \in V$, split it into $a_{in}, a_{out} \in V'$ as before (and let $s = s_{in} = s_{out}$, ... $w = w_{in}= w_{out}$ for simplicity). Construct one edge $(s, v)$ of capacity $2$, and two edges $(u, t), (w, t)$ of capacity $1$ in $E'$. For every edge $e = \{a,b\} \in E$, construct edges $(a_{out},b_{in}), (b_{out},a_{in}) \in E'$ of capacity $1$, and construct edges $(a_{in}, a_{out})$ of capacity $1$ for every $a \in V$ besides $s,t,u,v,w$.
+
+    Then $v_*(G') = 2$ if and only if there is a simple path from $u$ to $w$ through $v$ in $G$. Suppose $v_*(G') = 2$. Then two units of flow go from $s$ to $v$, and $1$ unit goes from each of $u,w$ to $t$. For every edge $(a_{out},b_{in})$ in $G'$ with flow $1$, add $\{a,b\}$ to the path in $G$. By the same reasoning as in Problem 2, all edges with positive flow in $G'$ have to be vertex disjoint in $G$ since otherwise we could for example have two units of flow leaving $a_{out}$, but only one incoming edge $a_{in} \to a_{out}$ of capacity $1$. For this to be a valid flow it is obvious that there must be a path in $G'$ of flow $1$ from $v$ to both $u$ and $w$, which means the edges in $G$ at least connect $v$ to $u$ and $w$. If we reverse the path from $v$ to $u$ in $G$, we get a path from $u$ to $w$ through $v$.
+
+    Now suppose we have a simple path from $u$ to $w$ through $v$. We traverse the paths in order from $u$ to $v$, i.e. if the first edge is $\{u, a^1\}$ send flow along $(a^1_{out},u)$ and $(a^1_{in}, a^1_{out})$. If the next edge is $\{a^1, a^2\}$ where $a^1$ was incident to the previous edge in the path, send flow along $(a^2_{out}, a^1_{in})$ and $(a^2_{in}, a^2_{out})$. Continue until we reach $v$, i.e. we send flow along $(v, a^k_{in})$ (but not from $v$ to itself). The next edge is also incident to $v$, $\{v, b^1\}$ so send flow along $(v, b^1_{in})$ and $(b^1_{in}, b^1_{out})$. If the next edge is $\{b^1, b^2\}$ where $b^1$ was incident to the previous edge, send flow along $(b^1_{out}, b^2_{in})$ and $(b^2_{in}, b^2_{out})$. Continue until we send flow along $(b^j_{out}, w)$ (but not $w$ to itself). Lastly, send two units of flow along $(s, v)$ and $1$ unit along each of $(u, t), (w, t)$. It is apparent that this is an $s$-$t$ flow of value $2$ since the vertices in the path in $G$ are disjoint, implying we never sent more than $1$ unit of flow along the interior directed edges $(a_{in}, a_{out})$. 
+
+    By Ford-Fulkerson, since $v_*(G') \leq 2$, computing max flow on this graph is possible in time 
+    \[O(|E'|v_*(G')) = O((2m + (n - 3) + 3)2) = O(m + n) = O(m)\] 
+    where we used $n - 1 \leq m$ as $G$ is connected and any spanning tree has $n-1$ edges.
+\end{shaded}
 \textbf{\emph{Hint}}\emph{: It may be helpful to solve parts of problem
 2 first}.
 \end{document}
